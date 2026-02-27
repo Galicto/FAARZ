@@ -47,10 +47,22 @@ export default function Sidebar() {
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             className="fixed left-0 top-0 h-screen z-50 flex flex-col"
             style={{
-                background: "var(--faarz-surface)",
+                background: "rgba(18, 30, 24, 0.85)",
+                backdropFilter: "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
                 borderRight: "1px solid var(--faarz-border)",
             }}
         >
+            {/* Animated glow line at top */}
+            <motion.div
+                className="h-[2px] w-full"
+                style={{
+                    background: "linear-gradient(90deg, transparent, var(--faarz-neon), var(--faarz-green), transparent)",
+                }}
+                animate={{ opacity: [0.3, 0.8, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+
             {/* Logo */}
             <div className="flex items-center justify-between px-4 py-5">
                 <AnimatePresence>
@@ -61,15 +73,17 @@ export default function Sidebar() {
                             exit={{ opacity: 0, x: -10 }}
                             className="flex items-center gap-2.5"
                         >
-                            <div
+                            <motion.div
                                 className="w-9 h-9 rounded-xl flex items-center justify-center neon-glow"
                                 style={{ background: "var(--faarz-green)" }}
+                                animate={{ rotateY: [0, 360] }}
+                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                             >
                                 <Leaf size={20} color="#0a0f0d" strokeWidth={2.5} />
-                            </div>
+                            </motion.div>
                             <span
-                                className="text-xl font-bold tracking-tight"
-                                style={{ fontFamily: "var(--font-display)", color: "var(--faarz-neon)" }}
+                                className="text-xl font-bold tracking-tight text-shimmer"
+                                style={{ fontFamily: "var(--font-display)" }}
                             >
                                 FAARZ
                             </span>
@@ -91,7 +105,7 @@ export default function Sidebar() {
 
             {/* Nav Items */}
             <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-                {navItems.map((item) => {
+                {navItems.map((item, idx) => {
                     const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                     return (
                         <Link key={item.href} href={item.href}>
@@ -108,11 +122,19 @@ export default function Sidebar() {
                                     <motion.div
                                         layoutId="active-nav"
                                         className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full"
-                                        style={{ background: "var(--faarz-neon)" }}
+                                        style={{
+                                            background: "var(--faarz-neon)",
+                                            boxShadow: "0 0 12px var(--faarz-neon), 0 0 4px var(--faarz-green)",
+                                        }}
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
-                                <item.icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                                <motion.div
+                                    className={isActive ? "animate-subtle-bounce" : ""}
+                                    style={{ display: "flex" }}
+                                >
+                                    <item.icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                                </motion.div>
                                 <AnimatePresence>
                                     {!collapsed && (
                                         <motion.span
@@ -182,6 +204,16 @@ export default function Sidebar() {
                     </AnimatePresence>
                 </button>
             </div>
+
+            {/* Bottom glow line */}
+            <motion.div
+                className="h-[1px] w-full"
+                style={{
+                    background: "linear-gradient(90deg, transparent, var(--faarz-green), transparent)",
+                }}
+                animate={{ opacity: [0.2, 0.5, 0.2] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
         </motion.aside>
     );
 }
